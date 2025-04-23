@@ -2,12 +2,23 @@ import urllib.request
 import urllib.error
 import argparse
 import json
+import os
+from dotenv import load_dotenv
+import sys
+
+load_dotenv()
+
+api_key = os.getenv('TMDB_API_KEY')
+
+if not api_key:
+    print("API key not found. Please set the TMDB_API_KEY environment variable.")
+    sys.exit(1)
 
 url = "https://api.themoviedb.org/3/authentication"
 
 headers = {
     'accept': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkOWJmYThlZGIzZmM2M2ZjMGU5NzkwNmMyMjI0YTU2YiIsIm5iZiI6MTc0NTQxMTkxNC4zNiwic3ViIjoiNjgwOGRmNGEyNzZiZjY0ZTQxYWI1ZmFjIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.v7cdNS5UXdah9Y3c3nDmBt2izyixytkUB1o2oBRmMpE'
+    'Authorization': 'Bearer ' + api_key,
 }
 
 def fetch_data(url):
