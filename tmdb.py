@@ -14,8 +14,6 @@ if not api_key:
     print("API key not found. Please set the TMDB_API_KEY environment variable.")
     sys.exit(1)
 
-url = "https://api.themoviedb.org/3/authentication"
-
 headers = {
     'accept': 'application/json',
     'Authorization': 'Bearer ' + api_key,
@@ -33,7 +31,47 @@ def fetch_data(url):
         print(f"URL error: {e.reason}")
     except json.JSONDecodeError as e:
         print(f"JSON decode error: {e.msg}")
+    return None
 
-data = fetch_data(url)
-if data:
-    print(json.dumps(data, indent=4))
+def fetch_playing_now():
+    url = "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1"
+    return fetch_data(url)
+
+def fetch_popular():
+    url = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1"
+    return fetch_data(url)
+
+def fetch_top_rated():
+    url = "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1"
+    return fetch_data(url)
+
+def fetch_upcoming():
+    url = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1"
+    return fetch_data(url)
+    
+parser = argparse.ArgumentParser(description='Fetch movie data from TMDB API.')
+parser.add_argument('--popular', action='store_true', help='Fetch popular movies')
+parser.add_argument('--top-rated', action='store_true', help='Fetch top rated movies')
+parser.add_argument('--upcoming', action='store_true', help='Fetch upcoming movies')
+parser.add_argument('--playing-now', action='store_true', help='Fetch movies currently playing in theaters')
+args = parser.parse_args()
+
+if args.popular:
+    data = fetch_popular()
+    if data:
+        print(json.dumps(data, indent=4))
+elif args.top_rated:
+    data = fetch_top_rated()
+    if data:
+        print(json.dumps(data, indent=4))
+elif args.upcoming:
+    data = fetch_upcoming()
+    if data:
+        print(json.dumps(data, indent=4))
+elif args.playing_now:
+    data = fetch_playing_now()
+    if data:
+        print(json.dumps(data, indent=4))
+else:
+    print("Please specify an option: --popular, --top-rated, --upcoming, or --playing-now.")
+    sys.exit(1)
